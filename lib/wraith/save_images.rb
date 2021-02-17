@@ -5,7 +5,7 @@ require "wraith/helpers/capture_options"
 require "wraith/helpers/logger"
 require "wraith/helpers/save_metadata"
 require "wraith/helpers/utilities"
-require "selenium-webdriver"
+require "webdrivers"
 require 'mini_magick'
 
 class Wraith::SaveImages
@@ -28,6 +28,11 @@ class Wraith::SaveImages
   end
 
   def save_images
+    # Prepare driver before we parallelize tasks
+    if meta.engine == "chrome"
+      get_driver
+    end
+
     jobs = define_jobs
     parallel_task(jobs)
   end
