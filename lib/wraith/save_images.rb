@@ -97,7 +97,6 @@ class Wraith::SaveImages
     when "chrome"
       options = Selenium::WebDriver::Chrome::Options.new
       [
-        'disable-gpu',
         'headless',
         'no-sandbox',
         'device-scale-factor=1',
@@ -131,6 +130,7 @@ class Wraith::SaveImages
     screen_sizes.to_s.split(",").each do |screen_size|
       for attempt in 1..3 do
         begin
+          puts "Snapping #{url} at size #{screen_size}"
           width, height = screen_size.split("x")
           new_file_name = file_name.sub('MULTI', screen_size)
           driver.manage.window.resize_to(width, height || 1500)
@@ -143,7 +143,7 @@ class Wraith::SaveImages
           crop_selector(driver, selector, new_file_name) if selector && selector.length > 0
           break
         rescue Net::ReadTimeout => e
-          logger.error "Got #{e} on attempt #{attempt} at screen size #{screensize}. URL = #{url}"
+          logger.error "Got #{e} on attempt #{attempt} at screen size #{screen_size}. URL = #{url}"
         end
       end
     end
